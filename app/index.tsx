@@ -28,14 +28,16 @@ const HomeScreen = () => {
     const [task, setTasks] = useState(0);
     const [completed, setCompleted] = useState(0);
     const [text, setText] = useState('')
-    const [allTasks, setAllTasks] = useState<any[]>([])
+    const [allTasks, setAllTasks] = useState(0)
+    const [allTasks1, setAllTasks1] = useState<any[]>([])
+    const [allTasks2, setAllTasks2] = useState<any[]>([])
     NavigationBar.setBackgroundColorAsync("black");
-    useFocusEffect(
-        useCallback(() => {
-            // StatusBar.setBarStyle('light-content');
-            StatusBar.setBackgroundColor('#0a0a0a');
-        }, [])
-    )
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         // StatusBar.setBarStyle('light-content');
+    //         StatusBar.setBackgroundColor('#0a0a0a');
+    //     }, [])
+    // )
     const getTime = () => {
         var hours = new Date().getHours();
         var min = new Date().getMinutes();
@@ -55,32 +57,47 @@ const HomeScreen = () => {
     const addTask = (props: boolean) => {
         if (props && text.length > 0) {
             setTasks(task + 1);
+            setAllTasks(allTasks + 1);
             var hora = getTime();
-            var lista = [...allTasks];
-            lista.push({
+            // var lista = [...allTasks];
+            var tarea = {
                 id: task,
                 time: hora,
                 texto: text,
-            });
-            setAllTasks(lista);
-            console.log(allTasks);
+            }
+            if (allTasks1 <= allTasks2) {
+                setAllTasks1([...allTasks1, tarea])
+            } else {
+                setAllTasks2([...allTasks2, tarea])
+            }
             setText('');
         }
         setText('');
         setVisible(false);
-
+    };
+    const deleteTask = (index: any) => {
+        var uno = allTasks1.filter(function (num) {
+            return num.id !== index;
+        });
+        setAllTasks1(uno);
+        var dos = allTasks2.filter(function (num) {
+            return num.id !== index;
+        });
+        setAllTasks2(dos);
+        setCompleted(completed + 1);
+        setTasks(task - 1);
     };
     return (
         <View style={styles.root}>
-            <StatusBar barStyle={'light-content'} backgroundColor="#0a0a0a" />
+            <StatusBar translucent barStyle={'light-content'} backgroundColor="#0a0a0a" />
             <ImageBackground source={wallpaper} style={styles.container}>
-                <View style={{ height: '13%', width: '100%', top: 40}}>
-                    <Text style={{ color: 'white', fontSize: 60, textAlign: 'center' }}> doing </Text>
+                <View style={{ height: '13%', width: '100%', top: 40, flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}> doing </Text>
+                    <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}>{completed} - <Text style={{ color: 'red' }}>{allTasks}</Text> </Text>
                 </View>
-                <View style={{ height: '12%', width: '100%', top: 40}}>
-                    <Text style={{ color: 'white', fontSize: 60, textAlign: 'center' }}>{completed} - <Text style={{ color: 'red' }}>{task}</Text> </Text>
+                <View style={{ height: '12%', width: '100%', top: 40 }}>
+                    <Text style={{ color: 'white', fontSize: 60, textAlign: 'center' }}> {task} </Text>
                 </View>
-
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
                     <Modal visible={visible} transparent animationType="fade" >
                         <View style={styles.over}>
@@ -99,28 +116,37 @@ const HomeScreen = () => {
                         </View>
                     </Modal>
                 </KeyboardAvoidingView>
-                <View style={{height: '50%'}}>
+                <View style={{ height: '50%' }}>
                     <FlatList
                         horizontal
                         contentContainerStyle={styles.box}
-                        // numColumns={2}
-                        data={allTasks}
-                        // keyExtractor={(item) => item.id}
-                        renderItem={() =>
-                            <View style={styles.cards}>
-                                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>1</Text>
-                            </View>
+                        data={allTasks1}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) =>
+                            <Pressable onLongPress={() => deleteTask(item.id)}>
+                                <View style={styles.cards}>
+                                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>{item.time}</Text>
+                                    <View style={{ height: 100, justifyContent: 'center' }}>
+                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>{item.texto}</Text>
+                                    </View>
+                                </View>
+                            </Pressable>
                         }
                     />
                     <FlatList
                         horizontal
                         contentContainerStyle={styles.box}
-                        data={allTasks}
-                        // keyExtractor={(item) => item.id}
-                        renderItem={(item) => {
-                            return <View style={styles.cards}>
-                                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>2</Text>
-                            </View>
+                        data={allTasks2}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => {
+                            return <Pressable onLongPress={() => deleteTask(item.id)}>
+                                <View style={styles.cards}>
+                                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>{item.time}</Text>
+                                    <View style={{ height: 100, justifyContent: 'center' }}>
+                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>{item.texto}</Text>
+                                    </View>
+                                </View>
+                            </Pressable>
                         }
                         }
                     />
@@ -137,7 +163,7 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
-    root: { flex: 1, height: '100%'},
+    root: { flex: 1, height: '100%' },
     rootow: {
         flex: 1,
         justifyContent: 'center',
@@ -200,7 +226,7 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         color: 'white',
         fontSize: 30,
-        gap: 25
+        gap: 10
     },
     box: {
         gap: 20,
