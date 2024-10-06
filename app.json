@@ -17,8 +17,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "android.adaptiveIcon.backgroundImage": "./assets/images/icon.png"
+        "foregroundImage": "./assets/images/icon.png"
       }
     },
     "web": {
