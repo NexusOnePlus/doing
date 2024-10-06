@@ -8,9 +8,10 @@ import {
     KeyboardAvoidingView,
     Modal,
     StatusBar,
-    FlatList
+    FlatList,
+    InteractionManager
 } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import * as NavigationBar from 'expo-navigation-bar';
 import { useFocusEffect } from "expo-router";
 
@@ -27,17 +28,13 @@ const HomeScreen = () => {
     const [visible, setVisible] = useState(false);
     const [task, setTasks] = useState(0);
     const [completed, setCompleted] = useState(0);
-    const [text, setText] = useState('')
-    const [allTasks, setAllTasks] = useState(0)
-    const [allTasks1, setAllTasks1] = useState<any[]>([])
-    const [allTasks2, setAllTasks2] = useState<any[]>([])
+    const [text, setText] = useState('');
+    const [allTasks, setAllTasks] = useState(0);
+    const [allTasks1, setAllTasks1] = useState<any[]>([]);
+    const [allTasks2, setAllTasks2] = useState<any[]>([]);
+    const inputRef = useRef<any>(null);
+
     NavigationBar.setBackgroundColorAsync("black");
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         // StatusBar.setBarStyle('light-content');
-    //         StatusBar.setBackgroundColor('#0a0a0a');
-    //     }, [])
-    // )
     const getTime = () => {
         var hours = new Date().getHours();
         var min = new Date().getMinutes();
@@ -89,7 +86,7 @@ const HomeScreen = () => {
     };
     return (
         <View style={styles.root}>
-            <StatusBar translucent barStyle={'light-content'} backgroundColor="#0a0a0a" />
+            <StatusBar  barStyle={'light-content'} backgroundColor="#0a0a0a" />
             <ImageBackground source={wallpaper} style={styles.container}>
                 <View style={{ height: '13%', width: '100%', top: 40, flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}> doing </Text>
@@ -99,11 +96,15 @@ const HomeScreen = () => {
                     <Text style={{ color: 'white', fontSize: 60, textAlign: 'center' }}> {task} </Text>
                 </View>
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
-                    <Modal visible={visible} transparent animationType="fade" >
+                    <Modal visible={visible} transparent animationType="fade"  onShow={() => {
+                        setTimeout(() => {
+                            inputRef.current.focus();
+                            }, 100);
+                    }}>
                         <View style={styles.over}>
                             <View style={styles.inside}>
                                 <Text style={{ color: 'white', fontSize: 15, textAlign: 'center' }}>{getTime()}</Text>
-                                <TextInput autoFocus style={styles.inputreal} multiline maxLength={64} onChangeText={(newText) => setText(newText)} defaultValue={text} />
+                                <TextInput  ref={inputRef} style={styles.inputreal} multiline maxLength={64} onChangeText={(newText) => setText(newText)} defaultValue={text} />
                             </View>
                             <View style={styles.input}>
                                 <Pressable style={styles.button} onPress={() => addTask(false)}>

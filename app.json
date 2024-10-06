@@ -18,7 +18,8 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png"
-      }
+      },
+      "package": "com.justwill.doing"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +33,9 @@
       "typedRoutes": true
     },
     "extra": {
+      "eas": {
+        "projectId": "98e79b01-6a56-4c2d-8177-d38de039d91b"
+      }
     }
   }
 }
