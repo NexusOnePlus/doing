@@ -30,6 +30,8 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
     }
   }
 }
