@@ -33,8 +33,12 @@ const HomeScreen = () => {
     const [allTasks1, setAllTasks1] = useState<any[]>([]);
     const [allTasks2, setAllTasks2] = useState<any[]>([]);
     const inputRef = useRef<any>(null);
-
-    NavigationBar.setBackgroundColorAsync("black");
+    
+    useEffect(() => {
+        NavigationBar.setBackgroundColorAsync("black");
+        StatusBar.setBarStyle('light-content', true);
+        StatusBar.setBackgroundColor('#000000');
+    },[])
     const getTime = () => {
         var hours = new Date().getHours();
         var min = new Date().getMinutes();
@@ -86,7 +90,6 @@ const HomeScreen = () => {
     };
     return (
         <View style={styles.root}>
-            <StatusBar  barStyle={'light-content'} backgroundColor="#0a0a0a" />
             <ImageBackground source={wallpaper} style={styles.container}>
                 <View style={{ height: '13%', width: '100%', top: 40, flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}> doing </Text>
