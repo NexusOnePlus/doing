@@ -9,11 +9,9 @@ import {
     Modal,
     StatusBar,
     FlatList,
-    InteractionManager
 } from "react-native";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as NavigationBar from 'expo-navigation-bar';
-import { useFocusEffect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const wallpaper = require('@/assets/images/wallpaper.png')
@@ -50,6 +48,7 @@ const HomeScreen = () => {
                     setCompleted(a.made);
                     setAllTasks(a.history);
                     setTasks(a.live);
+                    // restart();
                 }
             } catch (e) {
                 console.log('error', e);
@@ -97,11 +96,11 @@ const HomeScreen = () => {
             var hora = getTime();
             // var lista = [...allTasks];
             var tarea = {
-                id: task,
+                id: allTasks,
                 time: hora,
                 texto: text,
             }
-            if (allTasks1 <= allTasks2) {
+            if (allTasks1.length <= allTasks2.length) {
                 setAllTasks1([...allTasks1, tarea])
             } else {
                 setAllTasks2([...allTasks2, tarea])
@@ -127,7 +126,7 @@ const HomeScreen = () => {
         <View style={styles.root}>
             <ImageBackground source={wallpaper} style={styles.container}>
                 <View style={{ height: '13%', width: '100%', top: 40, flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                    <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}> doing </Text>
+                    <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}>  Doing </Text>
                     <Text style={{ color: 'white', fontSize: 40, textAlign: 'center' }}>{completed} - <Text style={{ color: 'red' }}>{allTasks}</Text> </Text>
                 </View>
                 <View style={{ height: '12%', width: '100%', top: 40 }}>
@@ -142,7 +141,7 @@ const HomeScreen = () => {
                         <View style={styles.over}>
                             <View style={styles.inside}>
                                 <Text style={{ color: 'white', fontSize: 15, textAlign: 'center' }}>{getTime()}</Text>
-                                <TextInput ref={inputRef} style={styles.inputreal} multiline maxLength={64} onChangeText={(newText) => setText(newText)} defaultValue={text} />
+                                <TextInput ref={inputRef} style={styles.inputreal} multiline maxLength={36} onChangeText={(newText) => setText(newText)} defaultValue={text} />
                             </View>
                             <View style={styles.input}>
                                 <Pressable style={styles.button} onPress={() => addTask(false)}>
@@ -166,7 +165,7 @@ const HomeScreen = () => {
                                 <View style={styles.cards}>
                                     <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>{item.time}</Text>
                                     <View style={{ height: 100, justifyContent: 'center' }}>
-                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>{item.texto}</Text>
+                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>{item.texto}</Text>
                                     </View>
                                 </View>
                             </Pressable>
@@ -182,7 +181,7 @@ const HomeScreen = () => {
                                 <View style={styles.cards}>
                                     <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>{item.time}</Text>
                                     <View style={{ height: 100, justifyContent: 'center' }}>
-                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>{item.texto}</Text>
+                                        <Text style={{ color: 'white', textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>{item.texto}</Text>
                                     </View>
                                 </View>
                             </Pressable>
@@ -230,7 +229,7 @@ const styles = StyleSheet.create({
         textAlign: 'center', fontSize: 25, color: 'white',
     },
     inputreal: {
-        textAlign: 'center', fontSize: 25, color: 'white', height: 150
+        textAlign: 'center', fontSize: 30, color: 'white', height: 150
     },
     button: {
         justifyContent: 'center',
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
         bottom: 20
     },
     inside: {
-        backgroundColor: '#2a2d2a',
+        backgroundColor: '#1f2431',
         height: 250,
         width: 250,
         padding: 20,
@@ -258,7 +257,7 @@ const styles = StyleSheet.create({
         gap: 25
     },
     cards: {
-        backgroundColor: '#2a2d2a',
+        backgroundColor: '#1f2431',
         height: 165,
         width: 165,
         padding: 20,
