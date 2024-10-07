@@ -14,6 +14,7 @@ import {
 import { useState, useEffect, useCallback, useRef } from "react";
 import * as NavigationBar from 'expo-navigation-bar';
 import { useFocusEffect } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const wallpaper = require('@/assets/images/wallpaper.png')
 
@@ -33,12 +34,36 @@ const HomeScreen = () => {
     const [allTasks1, setAllTasks1] = useState<any[]>([]);
     const [allTasks2, setAllTasks2] = useState<any[]>([]);
     const inputRef = useRef<any>(null);
-    
+
     useEffect(() => {
         NavigationBar.setBackgroundColorAsync("black");
         StatusBar.setBarStyle('light-content', true);
         StatusBar.setBackgroundColor('#000000');
-    },[])
+        const fetchData = async () => {
+            try {
+                const storeTasks = await AsyncStorage.getItem('data');
+                if (storeTasks !== null) {
+                    var a = JSON.parse(storeTasks);
+                    // console.log(a);
+                    setAllTasks1(a.tasks1);
+                    setAllTasks2(a.tasks2);
+                    setCompleted(a.made);
+                    setAllTasks(a.history);
+                    setTasks(a.live);
+                }
+            } catch (e) {
+                console.log('error', e);
+            }
+        }
+        fetchData();
+    }, [])
+    const restart = () => {
+        setAllTasks1([]);
+        setAllTasks2([]);
+        setCompleted(0);
+        setAllTasks(0);
+        setTasks(0);
+    }
     const getTime = () => {
         var hours = new Date().getHours();
         var min = new Date().getMinutes();
@@ -54,6 +79,16 @@ const HomeScreen = () => {
             hora = hora + ' am'
         }
         return hora;
+    }
+    useEffect(() => {
+        update();
+    }, [allTasks1, allTasks2, allTasks, task, completed])
+    const update = async () => {
+        try {
+            await AsyncStorage.setItem('data', JSON.stringify({ live: task, made: completed, history: allTasks, tasks1: allTasks1, tasks2: allTasks2 }));
+        } catch (error) {
+            console.log('error', error);
+        }
     }
     const addTask = (props: boolean) => {
         if (props && text.length > 0) {
@@ -99,15 +134,15 @@ const HomeScreen = () => {
                     <Text style={{ color: 'white', fontSize: 60, textAlign: 'center' }}> {task} </Text>
                 </View>
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
-                    <Modal visible={visible} transparent animationType="fade"  onShow={() => {
+                    <Modal visible={visible} transparent animationType="fade" onShow={() => {
                         setTimeout(() => {
                             inputRef.current.focus();
-                            }, 100);
+                        }, 100);
                     }}>
                         <View style={styles.over}>
                             <View style={styles.inside}>
                                 <Text style={{ color: 'white', fontSize: 15, textAlign: 'center' }}>{getTime()}</Text>
-                                <TextInput  ref={inputRef} style={styles.inputreal} multiline maxLength={64} onChangeText={(newText) => setText(newText)} defaultValue={text} />
+                                <TextInput ref={inputRef} style={styles.inputreal} multiline maxLength={64} onChangeText={(newText) => setText(newText)} defaultValue={text} />
                             </View>
                             <View style={styles.input}>
                                 <Pressable style={styles.button} onPress={() => addTask(false)}>
